@@ -30,17 +30,17 @@ if __name__ == '__main__':
 	# Loads the data from Local File System since this job
 	# is not using any kind of cloud service
 	df = spark.read.format("csv") \
-				.option("header", "true") \
-				.load(INPUT_FILE_PATH)
+		.option("header", "true") \
+		.load(INPUT_FILE_PATH)
 
 
 	# Eliminates duplicated data rows based on `update_date`
 	# To acomplish this, first is necessary to get only the pair
 	# `id` and `update_date` is valid.
 	df_grouped = df \
-				.groupby("id") \
-				.agg({"update_date":"max"}) \
-				.withColumnRenamed("max(update_date)","update_date")
+	    .groupby("id") \
+	    .agg({"update_date":"max"}) \
+	    .withColumnRenamed("max(update_date)","update_date")
 
 
 	# And, in second place, proceed with a INNER JOIN operation to 
@@ -57,12 +57,12 @@ if __name__ == '__main__':
 	# we have our main data reduced)
 	dt_configs = datatypes()
 	for dt in dt_configs:
-		df_transformed = df_transformed 	\
-							.withColumn(
-								dt, 
-								df_transformed[dt] \
-									.cast(dt_configs[dt])
-							)	
+		df_transformed = df_transformed \
+		    .withColumn(
+			dt, 
+			df_transformed[dt] \
+			    .cast(dt_configs[dt])
+		)	
 	
 	
 	# Persist data in the File System with PARQUET
